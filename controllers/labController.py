@@ -39,7 +39,7 @@ class LabController:
         else:
             if "password" in result:
                 del result["password"]
-            access_token = create_access_token(identity=email, fresh=True)
+            access_token = create_access_token(identity=email, fresh=True)  
             refresh_token = create_refresh_token(email)
             return jsonify({"message": "Login successful", "lab": result, "access_token":access_token, "refresh_token":refresh_token}), 200   
 
@@ -76,6 +76,67 @@ class LabController:
             return jsonify({"message": "Lab updated successfully"}), 200
         else:
             return jsonify({"message": "Lab update failed"}), 500
+        
+
+
+    def getLabs(self):
+        result = self.lab_service.getLabs()
+        if not result:
+            return jsonify({"message": result}), 404
+        else:
+            for lab in result:
+                if "password" in lab:
+                    del lab["password"]
+            return jsonify({"labs": result}), 200
+        
+
+    @jwt_required()
+    def AddLabTest(self, request):
+        data = request.get_json()
+        lab_id = data["lab_id"]
+        test_name = data["test_name"]
+        test_description = data["test_description"]
+        test_cost = data["test_cost"]
+        test_discount = data["test_discount"]
+        availability = data["availability"]
+        more_info = data["more_info"]
+
+        result = self.lab_service.AddLabTest(lab_id, test_name, test_description, test_cost, test_discount, availability, more_info)
+        if result:
+            return jsonify({"message": "Lab test added successfully"}), 201
+        else:
+            return jsonify({"message": "Failed to add lab test"}), 500
+        
+
+    def viewLabTests(self, request):
+        data = request.get_json()
+        lab_id = data["lab_id"]
+        result = self.lab_service.viewLabTests(lab_id)
+        if not result:
+            return jsonify({"message": "No tests found"}), 404
+        else:
+            return jsonify({"message": result}), 200
+        
+
+
+    def updateLabTest(self, request):
+        data = request.get_json()
+        test_id = data["test_id"]
+        test_name = data["test_name"]
+        test_description = data["test_description"]
+        test_cost = data["test_cost"]
+        test_discount = data["test_discount"]
+        availability = data["availability"]
+        more_info = data["more_info"]
+
+        result = self.lab_service.updateLabTest(test_id, test_name, test_description, test_cost, test_discount, availability, more_info)
+        if result:
+            return jsonify({"message": "Lab test updated successfully"}), 200
+        else:
+            return jsonify({"message": "Failed to update lab test"}), 500
+
+        
+
         
 
 

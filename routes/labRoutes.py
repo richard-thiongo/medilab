@@ -23,4 +23,22 @@ def labProfile():
 def updateLab():
     return lab_controller.updateLab(request)
 
+@lab_blueprint.route('/getLabs', methods=['DELETE'])
+def getLabs():
+    return lab_controller.getLabs()
+
+@lab_blueprint.route('/add_test', methods=['POST'])
+def AdLabTest():
+    return lab_controller.AddLabTest(request)
+
+@lab_blueprint.route('/get_tests', methods=['POST'])
+def viewLabTests():
+    return lab_controller.viewLabTests(request)
+
+@lab_blueprint.route('/updatetest', methods=['PUT'])
+def updateLabTest():
+    return lab_controller.updateLabTest(request)
+
+
+
 

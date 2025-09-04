@@ -2,6 +2,13 @@ from flask import Flask
 from routes.labRoutes import lab_blueprint
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
+from routes.nurseRoutes import nurse_blueprint
+from routes.locationRoutes import location_blueprint
+from routes.memberRoutes import members_blueprint
+from routes.dependantRoutes import dependant_blueprint
+from routes.bookingRoutes import booking_blueprint
+from routes.allocationsRoutes import allocations_blueprint
+
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -14,6 +21,12 @@ app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours= 1)
 jwt = JWTManager(app)
 
 app.register_blueprint(lab_blueprint)
+app.register_blueprint(nurse_blueprint)
+app.register_blueprint(location_blueprint)
+app.register_blueprint(members_blueprint)
+app.register_blueprint(dependant_blueprint)
+app.register_blueprint(booking_blueprint)
+app.register_blueprint(allocations_blueprint)
 
 # Run the app
 if __name__ == '__main__':

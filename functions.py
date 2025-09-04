@@ -2,7 +2,7 @@
 
 import bcrypt
 import re
-
+import uuid
 def hash_password(password):
     bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
@@ -23,3 +23,6 @@ def is_valid_password(password, min_len=8, max_len=64):
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(pattern, email) is not None
+
+def genInvoiceNumber():
+    return str(uuid.uuid4())
