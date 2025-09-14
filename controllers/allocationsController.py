@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from services.allocations import AllocationsService
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 
 class AllocationsController:
@@ -12,6 +12,11 @@ class AllocationsController:
         data = request.get_json()
         nurse_id = data["nurse_id"]
         invoice_no = data["invoice_no"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+
         result = self.allocations_service.allocate(nurse_id, invoice_no)
         if result:
             return jsonify({"message": "Nurse allocated successfully"}), 200
@@ -23,6 +28,11 @@ class AllocationsController:
     def getNurseAllocations(self, request):
         data = request.get_json()
         nurse_id = data["nurse_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "nurse":
+            return jsonify({"message": "Unauthorized"}), 401
+
         result = self.allocations_service.viewNurseAllocations(nurse_id)
         if not result:
             return jsonify({"message": "Nurse allocations not found"}), 500
@@ -32,6 +42,12 @@ class AllocationsController:
 
     @jwt_required()
     def allAllocations(self ):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+
+
         result = self.allocations_service.allAllocations()
         if not result:
             return jsonify({"message": "Allocations not found"}), 500
@@ -46,6 +62,11 @@ class AllocationsController:
         # nurse_id = data["nurse_id"]
         flag = data["flag"]
         allocation_id = data["allocation_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+
         result = self.allocations_service.updateAllocation(flag, allocation_id)
         if result:
             return jsonify({"message": "Allocation updated successfully"}), 200
@@ -57,6 +78,11 @@ class AllocationsController:
     def deleteAllocation(self, request):
         data = request.get_json()
         allocation_id = data["allocation_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+
         result = self.allocations_service.deleteAllocation(allocation_id)
         if result:
             return jsonify({"message": "Allocation deleted successfully"}), 200
@@ -68,6 +94,11 @@ class AllocationsController:
     def deleteNurseAllocations(self, request):
         data = request.get_json()
         nurse_id = data["nurse_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+
         result = self.allocations_service.deleteNurseAllocations(nurse_id)
         if result:
             return jsonify({"message": "Nurse allocations deleted successfully"}), 200

@@ -1,7 +1,7 @@
 from flask import jsonify
 from services.nurses import NurseService
 import functions
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt_identity,  create_refresh_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt_identity,  create_refresh_token, get_jwt
 
 class NurseController:
     def __init__(self):
@@ -17,6 +17,11 @@ class NurseController:
         email = data["email"]
         phone = data["phone"]
         password = data["password"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized access"}), 401
+
 
         hashed_password = functions.hash_password(password)
         result = self.nurse_service.nurseRegistration(surname, others, lab_id, gender, email, phone, hashed_password )
@@ -39,7 +44,8 @@ class NurseController:
         else:
             if "password" in result:
                 del result["password"]
-            access_token = create_access_token(identity=email, fresh=True)  
+            role = "nurse"
+            access_token = create_access_token(identity=email, fresh=True, additional_claims={"role": role})  
             refresh_token = create_refresh_token(email)
             return jsonify({"message": "Login successful", "nurse": result, "access_token":access_token, "refresh_token":refresh_token}), 200
         
@@ -47,6 +53,10 @@ class NurseController:
     def viewNurses(self, request):
         data = request.get_json()
         lab_id = data["lab_id"]
+        claims = get_jwt
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized access"}), 401
         result = self.nurse_service.viewNurses(lab_id)
         if not result:
             return jsonify({"message": "No nurses found"}), 404
@@ -67,6 +77,10 @@ class NurseController:
         email = data["email"]
         phone = data["phone"]
         password = data["password"]
+        claims = get_jwt
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized access"}), 401
         result = self.nurse_service.updateNurse(nurse_id, surname, others, lab_id, gender, email, phone, password)
         if result:
             return jsonify({"message": "Nurse updated successfully"}), 200

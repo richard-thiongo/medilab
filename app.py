@@ -8,6 +8,11 @@ from routes.memberRoutes import members_blueprint
 from routes.dependantRoutes import dependant_blueprint
 from routes.bookingRoutes import booking_blueprint
 from routes.allocationsRoutes import allocations_blueprint
+from routes.imageRoute import image_blueprint
+from routes.adminRoutes import admin_blueprint
+from routes.paymentRoute import payment_blueprint
+
+
 
 
 # Initialize the Flask app
@@ -27,6 +32,10 @@ app.register_blueprint(members_blueprint)
 app.register_blueprint(dependant_blueprint)
 app.register_blueprint(booking_blueprint)
 app.register_blueprint(allocations_blueprint)
+app.register_blueprint(image_blueprint)
+app.register_blueprint(admin_blueprint)
+app.register_blueprint(payment_blueprint)
+
 
 # Run the app
 if __name__ == '__main__':

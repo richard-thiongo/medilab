@@ -1,15 +1,20 @@
 from flask import jsonify
 from services.locations import LocationService
-
+from flask_jwt_extended import get_jwt, jwt_required
 
 class LocationController:
     def __init__(self):
         self.location_service = LocationService()
 
-
+    @jwt_required()
     def addLocation(self, request):
+       
         data = request.get_json()
         location = data["location"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return ({"message": "Unauthorized access"}), 401
         result = self.location_service.addLocation(location)
         if result:
             return jsonify({"message": "Location added successfully"}), 201

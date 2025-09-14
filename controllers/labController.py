@@ -1,13 +1,13 @@
 from  flask import jsonify
 from services.labs import LabService
 import functions
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt_identity,  create_refresh_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt_identity,  create_refresh_token, get_jwt
 
 class LabController:
     def __init__(self):
         self.lab_service = LabService()
 
-
+    @jwt_required()
     def createLab(self, request):
         # excract the json data from the request
         data  = request.get_json()
@@ -16,6 +16,10 @@ class LabController:
         email = data["email"]
         phone = data["phone"]
         password = data["password"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":   
+            return jsonify({"message": "Unauthorized access"}), 401
 
         # Hash the password
 
@@ -39,7 +43,9 @@ class LabController:
         else:
             if "password" in result:
                 del result["password"]
-            access_token = create_access_token(identity=email, fresh=True)  
+
+            role = "lab"
+            access_token = create_access_token(identity=email, fresh=True, additional_claims={"role": role})  
             refresh_token = create_refresh_token(email)
             return jsonify({"message": "Login successful", "lab": result, "access_token":access_token, "refresh_token":refresh_token}), 200   
 
@@ -47,6 +53,10 @@ class LabController:
     def labProfile(self, request):
         data = request.get_json()
         lab_id = data["lab_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "lab":   
+            return jsonify({"message": "Unauthorized access"}), 401
         result = self.lab_service.labProfile(lab_id)
         if not result:
             return jsonify({"message": "Lab not found"}), 404
@@ -65,6 +75,10 @@ class LabController:
         email = data["email"]
         phone = data["phone"]
         password = data["password"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":   
+            return jsonify({"message": "Unauthorized access"}), 401
 
         # Hash the password
 
@@ -80,6 +94,11 @@ class LabController:
 
 
     def getLabs(self):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":   
+            return jsonify({"message": "Unauthorized access"}), 401
+
         result = self.lab_service.getLabs()
         if not result:
             return jsonify({"message": result}), 404
@@ -100,7 +119,6 @@ class LabController:
         test_discount = data["test_discount"]
         availability = data["availability"]
         more_info = data["more_info"]
-
         result = self.lab_service.AddLabTest(lab_id, test_name, test_description, test_cost, test_discount, availability, more_info)
         if result:
             return jsonify({"message": "Lab test added successfully"}), 201
@@ -111,6 +129,11 @@ class LabController:
     def viewLabTests(self, request):
         data = request.get_json()
         lab_id = data["lab_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "lab":   
+            return jsonify({"message": "Unauthorized access"}), 401
+
         result = self.lab_service.viewLabTests(lab_id)
         if not result:
             return jsonify({"message": "No tests found"}), 404
@@ -128,6 +151,7 @@ class LabController:
         test_discount = data["test_discount"]
         availability = data["availability"]
         more_info = data["more_info"]
+        
 
         result = self.lab_service.updateLabTest(test_id, test_name, test_description, test_cost, test_discount, availability, more_info)
         if result:

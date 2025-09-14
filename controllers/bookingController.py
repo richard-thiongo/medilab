@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from services.booking import BookingService
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 class BookingController:
     def __init__(self):
@@ -33,6 +33,11 @@ class BookingController:
             lattitude = data["lattitude"]
             longitude = data["longitude"]
 
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "member":
+            return jsonify({"message": "Unauthorized access"}), 401
+
         result = self.booking_service.makeBooking(member_id, booked_for, dependant_id, test_id, appointment_date, appointment_time, where_taken, lattitude, longitude, lab_id)
         if result:
             return jsonify({"message": "Booking successful"}), 201
@@ -43,6 +48,10 @@ class BookingController:
     def getMyBookings(self, request):
         data = request.get_json()
         member_id = data["member_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "member":
+            return jsonify({"message": "Unauthorized access"}), 401
         result = self.booking_service.getMyBookings(member_id)
         if not result:
             return jsonify({"message": "No bookings found"}), 404
@@ -55,6 +64,10 @@ class BookingController:
     def viewLabBookings(self, request):
         data = request.get_json()
         lab_id = data["lab_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized access"}), 401
         result = self.booking_service.viewLabBookings(lab_id)
         if not result:
             return jsonify({"message": "No bookings found"}), 404
