@@ -11,13 +11,13 @@ from routes.allocationsRoutes import allocations_blueprint
 from routes.imageRoute import image_blueprint
 from routes.adminRoutes import admin_blueprint
 from routes.paymentRoute import payment_blueprint
-
+from flask_cors import CORS
 
 
 
 # Initialize the Flask app
 app = Flask(__name__)
-
+CORS(app)
 # Setup the Flask-JWT-Extended extension
 
 app.secret_key = "9514bcfe52538f01f1e4de931fbb272f5e60b65dc6ada80080ea4ccdd4929dd2"

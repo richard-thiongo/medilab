@@ -20,3 +20,13 @@ def viewNurses():
 def updateNurse():
     return nurse_controller.updateNurse(request)
 
+
+@nurse_blueprint.route('/viewall', methods=['GET'])
+def viewAllNurses():
+    return nurse_controller.viewAllNurses()
+
+
+@nurse_blueprint.route('/viewsingle', methods=['POST'])
+def viewSingleNurse():
+    return nurse_controller.viewSingleNurse(request)
+

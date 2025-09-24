@@ -30,14 +30,14 @@ class AllocationsController:
         nurse_id = data["nurse_id"]
         claims = get_jwt()
         role = claims.get("role")
-        if role != "nurse":
-            return jsonify({"message": "Unauthorized"}), 401
-
-        result = self.allocations_service.viewNurseAllocations(nurse_id)
-        if not result:
-            return jsonify({"message": "Nurse allocations not found"}), 500
+        if role == "admin" or role == "nurse":
+            result = self.allocations_service.viewNurseAllocations(nurse_id)
+            if not result:
+                return jsonify({"message": "Nurse allocations not found"})
+            else:
+                return jsonify({"message": result}), 200
         else:
-            return jsonify({"message": result}), 200
+            return jsonify({"message": "Unauthorized"}), 401
         
 
     @jwt_required()

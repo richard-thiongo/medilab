@@ -30,14 +30,17 @@ class DependantController:
         member_id = data["member_id"]
         claims = get_jwt()
         role = claims.get("role")
-        if role != "member":
-            return jsonify({"message": "Unauthorized"}), 401
-        result = self.dependant_service.viewDependants(member_id)
-        if result:
-            return jsonify({"dependants": result}), 200
+        print(role)
+        if role == "member" or role == "admin":
+            result = self.dependant_service.viewDependants(member_id)
+            if result:
+                return jsonify({"dependants": result}), 200
+            else:
+                return jsonify({"message": "No dependants found"}), 404
         else:
-            return jsonify({"message": "No dependants found"}), 404
+            return jsonify({"message": "Unauthorized"}), 401
         
+
 
     @jwt_required()
     def updateDependant(self, request):
@@ -56,3 +59,19 @@ class DependantController:
             return jsonify({"message": "Dependant updated successfully"}), 200
         else:
             return jsonify({"message": "Failed to update dependant"}), 500
+        
+
+
+    @jwt_required()
+    def getDependantById(self, request):
+        data = request.get_json()
+        dependant_id = data["dependant_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role not in ["member", "admin"]:
+            return jsonify({"message": "Unauthorized"}), 401
+        result = self.dependant_service.getDependantById(dependant_id)
+        if result:
+            return jsonify( result), 200
+        else:
+            return jsonify({"message": "Dependant not found"})

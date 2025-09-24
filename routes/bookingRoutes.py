@@ -16,3 +16,8 @@ def view_booking():
 @booking_blueprint.route('/view_lab', methods=['POST'])
 def view_lab_booking():
     return booking_controller.viewLabBookings(request)
+
+
+@booking_blueprint.route('/view_all', methods=['GET'])
+def view_all_booking():
+    return booking_controller.getallBoookings(request)

@@ -76,7 +76,8 @@ class NurseService:
         query = "UPDATE nurses SET surname = %s, others = %s, lab_id = %s, gender = %s, email = %s, phone = %s, password = %s WHERE nurse_id = %s"
         try:
             cursor = self.db.get_cursor()
-            data = (surname, others, lab_id, gender, email, phone, password, nurse_id)
+            hashed_password = functions.hash_password(password)
+            data = (surname, others, lab_id, gender, email, phone, hashed_password, nurse_id)
             cursor.execute(query, data)
             self.db.commit()
             return True
@@ -85,3 +86,44 @@ class NurseService:
             return False
         finally:
             self.db.close() 
+
+
+    def viewAllNurses(self):
+        query = "SELECT * FROM nurses"
+        try:
+            cursor = self.db.get_cursor()
+            cursor.execute(query)
+            if cursor.rowcount == 0:
+                return False
+            else:
+                result = cursor.fetchall()
+                for nurse in result:
+                    if "password" in nurse:
+                        del nurse["password"]
+                return result
+        except Exception as e:
+            # print(e)
+            return False
+        finally:
+            self.db.close()
+
+
+
+    def viewSingleNurse(self, nurse_id):
+        query = "SELECT * FROM nurses WHERE nurse_id = %s"
+        try:
+            cursor = self.db.get_cursor()
+            data = (nurse_id)
+            cursor.execute(query, data)
+            if cursor.rowcount == 0:
+                return False
+            else:
+                result = cursor.fetchone()
+                if "password" in result:
+                    del result["password"]
+                return result
+        except Exception as e:
+            # print(e)
+            return False
+        finally:
+            self.db.close()

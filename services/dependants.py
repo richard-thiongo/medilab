@@ -56,3 +56,20 @@ class DependantService:
             return False
         finally:
             self.db.close()
+
+
+
+
+    def getDependantById (self, dependant_id):
+        get_dependant_query = "SELECT * FROM dependants WHERE dependant_id = %s"
+        try:
+            cursor = self.db.get_cursor()
+            data = (dependant_id)
+            cursor.execute(get_dependant_query, data)
+            dependant = cursor.fetchone()
+            return dependant
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.db.close

@@ -147,8 +147,41 @@ class LabService:
         finally:
             self.db.close() 
 
-    
 
+    def getAllTests(self):
+        query = "SELECT * FROM lab_test"
+        try:
+            cursor = self.db.get_cursor()
+            cursor.execute(query)
+            if cursor.rowcount == 0:
+                return False
+            else:
+                tests = cursor.fetchall()
+                return tests
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.db.close()
+
+    
+    
+    # A function that  fetches all  tests and returns total tests count in each month
+    def getTestsPerMonth(self):
+        query = "SELECT MONTHNAME(appiontment_date) as month, COUNT(*) as total FROM bookings GROUP BY MONTHNAME(appiontment_date)"
+        try:
+            cursor = self.db.get_cursor()
+            cursor.execute(query)
+            if cursor.rowcount == 0:
+                return False
+            else:
+                tests = cursor.fetchall()
+                return tests
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.db.close()
 
 
 

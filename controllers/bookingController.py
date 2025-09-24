@@ -74,6 +74,21 @@ class BookingController:
 
         else:
             return jsonify(result), 200
+        
+
+
+    @jwt_required() 
+    def getallBoookings(self, request):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized access"}), 401
+        result = self.booking_service.getallBookings()
+        if not result:
+            return jsonify({"message": "No bookings found"}), 404
+
+        else:
+            return jsonify(result), 200
 
 
 

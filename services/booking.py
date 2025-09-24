@@ -57,3 +57,18 @@ class BookingService:
             return False
         finally:
             self.db.close()
+
+
+    def getallBookings(self):
+        query = """select book_id, member_id, booked_for, dependant_id, test_id, appiontment_date, 
+        TIME_FORMAT(appointment_time, '%H:%i:%s') as appointment_time,
+        where_taken, reg_date, latitude, longitude, status, invoice_no, lab_id from bookings"""
+        try:
+            cursor = self.db.get_cursor()
+            cursor.execute(query)
+            return cursor.fetchall()
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.db.close()

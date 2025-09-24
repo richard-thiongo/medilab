@@ -55,11 +55,11 @@ class LabController:
         lab_id = data["lab_id"]
         claims = get_jwt()
         role = claims.get("role")
-        if role != "lab":   
+        if role not in ["admin", "lab", "nurse"]:   
             return jsonify({"message": "Unauthorized access"}), 401
         result = self.lab_service.labProfile(lab_id)
         if not result:
-            return jsonify({"message": "Lab not found"}), 404
+            return jsonify({"message": "Lab not found"})
         else:
             if "password" in result:
                 del result["password"]
@@ -92,7 +92,7 @@ class LabController:
             return jsonify({"message": "Lab update failed"}), 500
         
 
-
+    @jwt_required()
     def getLabs(self):
         claims = get_jwt()
         role = claims.get("role")
@@ -158,6 +158,23 @@ class LabController:
             return jsonify({"message": "Lab test updated successfully"}), 200
         else:
             return jsonify({"message": "Failed to update lab test"}), 500
+        
+
+    def getAllTests(self):
+        result = self.lab_service.getAllTests()
+        if not result:
+            return jsonify({"message": "No tests found"}), 404
+        else:
+            return jsonify({"message": result}), 200
+        
+
+
+    def getTestsPerMonth(self):
+        result = self.lab_service.getTestsPerMonth()
+        if not result:
+            return jsonify({"message": "No tests found"})
+        else:
+            return jsonify(result), 200
 
         
 

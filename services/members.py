@@ -88,5 +88,23 @@ class MemberService:
             self.db.close()
 
 
+    def getMembers(self):
+        query = "SELECT * FROM members"
+        try:
+            cursor = self.db.get_cursor()
+            cursor.execute(query)
+            if cursor.rowcount == 0:
+                return False
+            else:
+                members = cursor.fetchall()
+                return members
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.db.close()
+
+
+
     
 

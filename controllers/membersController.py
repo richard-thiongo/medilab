@@ -53,16 +53,18 @@ class MemberController:
         member_id = data["member_id"]
         claims = get_jwt()
         role = claims.get("role")
-        if role != "member":
-            return jsonify({"message": "Unauthorized"}), 401
-        result = self.member_service.memberProfile(member_id)
-        if not result:
-            return jsonify({"message": "No members found"}), 404
+        if role == "member" or role == "admin": 
+            result = self.member_service.memberProfile(member_id)
+            if not result:
+                return jsonify({"message": "No members found"})
+            else:
+                if "password" in result:
+                    del result["password"]
+                return jsonify({"members": result}), 200
         else:
-            if "password" in result:
-                del result["password"]
-            return jsonify({"members": result}), 200
+            return jsonify({"message": "Unauthorized"}), 401
         
+
 
     @jwt_required()
     def updateProfile(self, request):
@@ -86,6 +88,18 @@ class MemberController:
         else:
             return jsonify({"message": "Profile update failed"}), 500
 
+
+    @jwt_required()
+    def getMembers(self, request):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+        result = self.member_service.getMembers()
+        if not result:
+            return jsonify({"message": "No members found"}), 404
+        else:
+            return jsonify({"members": result}), 200
         
 
         

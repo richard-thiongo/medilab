@@ -20,3 +20,8 @@ def memberProfile():
 @members_blueprint.route('/update', methods=['PUT'])
 def memberUpdate():
     return members_controller.updateProfile(request)
+
+
+@members_blueprint.route('/getmembers', methods=['GET'])
+def getMembers():
+    return members_controller.getMembers(request)

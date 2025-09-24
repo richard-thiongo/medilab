@@ -23,7 +23,7 @@ def labProfile():
 def updateLab():
     return lab_controller.updateLab(request)
 
-@lab_blueprint.route('/getLabs', methods=['DELETE'])
+@lab_blueprint.route('/getLabs', methods=['GET'])
 def getLabs():
     return lab_controller.getLabs()
 
@@ -39,6 +39,16 @@ def viewLabTests():
 def updateLabTest():
     return lab_controller.updateLabTest(request)
 
+
+
+@lab_blueprint.route('/get_all_tests', methods=['GET'])
+def getAllTests():
+    return lab_controller.getAllTests()
+
+
+@lab_blueprint.route('/get_tests_per_month', methods=['GET'])
+def getTestsPerMonth():
+    return lab_controller.getTestsPerMonth()
 
 
 
