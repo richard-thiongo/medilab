@@ -75,3 +75,13 @@ class DependantController:
             return jsonify( result), 200
         else:
             return jsonify({"message": "Dependant not found"})
+        
+
+    def getDependantByMemberId(self, request):
+        data = request.get_json()
+        member_id = data["member_id"]
+        result = self.dependant_service.getDependantByMemberId(member_id)
+        if not result:
+            return jsonify({"message": "No dependants found"}), 404
+        else:
+            return jsonify( result), 200

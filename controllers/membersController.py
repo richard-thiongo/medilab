@@ -102,4 +102,17 @@ class MemberController:
             return jsonify({"members": result}), 200
         
 
+    @jwt_required()
+    def countMembersAndDependants(self, request):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return jsonify({"message": "Unauthorized"}), 401
+        result = self.member_service.countMembersAndDependants()
+        if not result:
+            return jsonify({"message": "No members found"})
+        else:
+            return jsonify({"members": result}), 200
+        
+
         

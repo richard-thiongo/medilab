@@ -51,4 +51,9 @@ def getTestsPerMonth():
     return lab_controller.getTestsPerMonth()
 
 
+@lab_blueprint.route('/get_test_by_id', methods=['POST'])
+def getTestById():
+    return lab_controller.getTestById(request)
+
+
 

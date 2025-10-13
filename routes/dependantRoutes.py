@@ -20,3 +20,9 @@ def update_dependant():
 @dependant_blueprint.route('/getdependantbyid', methods=['POST'])
 def get_dependant_by_id():
     return dependant_controller.getDependantById(request)
+
+
+
+@dependant_blueprint.route('/get_dependant_by_member_id', methods=['POST'])
+def get_dependant_by_member_id():
+    return dependant_controller.getDependantByMemberId(request)

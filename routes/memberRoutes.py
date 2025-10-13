@@ -25,3 +25,8 @@ def memberUpdate():
 @members_blueprint.route('/getmembers', methods=['GET'])
 def getMembers():
     return members_controller.getMembers(request)
+
+
+@members_blueprint.route('/countmembers', methods=['GET'])
+def countMembers():
+    return members_controller.countMembersAndDependants(request)

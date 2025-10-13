@@ -125,20 +125,23 @@ class LabController:
         else:
             return jsonify({"message": "Failed to add lab test"}), 500
         
-
+    @jwt_required()
     def viewLabTests(self, request):
         data = request.get_json()
         lab_id = data["lab_id"]
         claims = get_jwt()
         role = claims.get("role")
-        if role != "lab":   
+        if role not in ["admin", "lab"]:
             return jsonify({"message": "Unauthorized access"}), 401
-
         result = self.lab_service.viewLabTests(lab_id)
         if not result:
-            return jsonify({"message": "No tests found"}), 404
+            return jsonify({"message": "No tests found"})
         else:
-            return jsonify({"message": result}), 200
+            return jsonify(result), 200
+        
+
+            
+
         
 
 
@@ -173,6 +176,17 @@ class LabController:
         result = self.lab_service.getTestsPerMonth()
         if not result:
             return jsonify({"message": "No tests found"})
+        else:
+            return jsonify(result), 200
+        
+
+
+    def getTestById(self, request):
+        data = request.get_json()
+        test_id = data["test_id"]
+        result = self.lab_service.getTestById(test_id)
+        if not result:
+            return jsonify({"message": "Test not found"}), 404
         else:
             return jsonify(result), 200
 
