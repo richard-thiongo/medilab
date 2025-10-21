@@ -74,11 +74,11 @@ class MemberService:
         #     self.db.close()
 
 
-    def memberProfile(self, member_id):
-        query = "SELECT * FROM members WHERE member_id = %s"
+    def memberProfile(self, email):
+        query = "SELECT * FROM members WHERE email = %s"
         try:
             # cursor = self.db.get_cursor()
-            # data = (member_id)
+            # data =  email)
             # cursor.execute(query, data)
             # if cursor.rowcount == 0:
             #     return False
@@ -86,7 +86,7 @@ class MemberService:
             #     member = cursor.fetchone()
             #     return member
             with Database() as cursor:
-                data = (member_id)
+                data = (email)
                 cursor.execute(query, data)
                 if cursor.rowcount == 0:
                     return False

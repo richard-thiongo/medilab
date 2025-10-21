@@ -15,3 +15,7 @@ def viewLocations():
 @location_blueprint.route('/update', methods=['PUT'])
 def updateLocation():
     return location_controller.updateLocation(request)
+
+@location_blueprint.route('/view/location', methods=['POST'])
+def viewLocation():
+    return location_controller.viewLocation(request)

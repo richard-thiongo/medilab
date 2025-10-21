@@ -14,7 +14,7 @@ class DependantController:
         surname = data["surname"]
         others = data["others"]
         dob = data["dob"]
-        claims = get_jwt
+        claims = get_jwt()
         role = claims.get("role")
         if role != "member":
             return jsonify({"message": "Unauthorized"}), 401
@@ -22,7 +22,7 @@ class DependantController:
         if result:
             return jsonify({"message": "Dependant added successfully"}), 201
         else:
-            return jsonify({"message": "Failed to add dependant"}), 500
+            return jsonify({"message": "Failed to add dependant"}), 500 
         
     @jwt_required()
     def viewDependants(self, request):
@@ -85,3 +85,20 @@ class DependantController:
             return jsonify({"message": "No dependants found"}), 404
         else:
             return jsonify( result), 200
+        
+
+
+    # Delete dependant using the id and use JWT for the member
+    @jwt_required()
+    def deleteDependant(self, request):
+        data = request.get_json()
+        dependant_id = data["dependant_id"]
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "member":
+            return jsonify({"message": "Unauthorized"}), 401
+        result = self.dependant_service.deleteDependant(dependant_id)
+        if result:
+            return jsonify({"message": "Dependant deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Failed to delete dependant"}), 500

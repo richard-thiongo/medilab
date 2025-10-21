@@ -26,3 +26,9 @@ def get_dependant_by_id():
 @dependant_blueprint.route('/get_dependant_by_member_id', methods=['POST'])
 def get_dependant_by_member_id():
     return dependant_controller.getDependantByMemberId(request)
+
+
+
+@dependant_blueprint.route('/delete', methods=['DELETE'])
+def delete_dependant():
+    return dependant_controller.deleteDependant(request)

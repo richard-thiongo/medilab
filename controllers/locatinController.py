@@ -40,3 +40,13 @@ class LocationController:
             return jsonify({"message": "Location updated successfully"}), 200
         else:
             return jsonify({"message": "Failed to update location"}), 500
+        
+
+    def viewLocation(self, request):
+        data = request.get_json()
+        location_id = data["location_id"]
+        result = self.location_service.viewLocation(location_id)
+        if not result:
+            return jsonify({"message": "Location not found"}), 404
+        else:
+            return jsonify(result), 200

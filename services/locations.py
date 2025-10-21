@@ -65,3 +65,30 @@ class LocationService:
             return False
         # finally:
         #     self.db.close()
+
+
+    # Function to view location
+    def viewLocation(self, location_id):
+        query = "SELECT * FROM locations WHERE location_id = %s"
+        try:
+            # cursor = self.db.get_cursor()
+            # data = (location_id)
+            # cursor.execute(query, data)
+            # if cursor.rowcount == 0:
+            #     return False
+            # else:
+            #     location = cursor.fetchone()
+            #     return location
+            with Database() as cursor:
+                data = (location_id)
+                cursor.execute(query, data)
+                if cursor.rowcount == 0:
+                    return False
+                else:
+                    location = cursor.fetchone()
+                    return location
+        except Exception as e:
+            # print(e)
+            return False
+        # finally:
+        #     self.db.close()

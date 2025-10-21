@@ -120,3 +120,24 @@ class DependantService:
         #     self.db.close
 
 
+
+    # Delete dependant
+    def deleteDependant(self, dependant_id):
+        query = "DELETE FROM dependants WHERE dependant_id = %s"
+        try:
+            with Database() as cursor:
+                data = (dependant_id)
+                cursor.execute(query, data)
+                return True
+            # cursor = self.db.get_cursor()
+            # data = (dependant_id)
+            # cursor.execute(delete_dependant_query, data)
+            # self.db.commit()
+            # return True
+        except Exception as e:
+            print(e)
+            return False
+        # finally:
+        #     self.db.close
+
+
